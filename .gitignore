@@ -1,9 +1,14 @@
-# Backend
+# ===== BACKEND =====
 pharma_backend/venv/
-pharma_backend/__pycache__/
 pharma_backend/.env
-pharma_backend/*.pyc
 
-# Système
+# Python compiled files
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.cpython-*.pyc
+
+# ===== SYSTÈME =====
 .DS_Store
 Thumbs.db
+.vscode/
