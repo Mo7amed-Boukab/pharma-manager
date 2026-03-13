@@ -1,0 +1,9 @@
+# Backend
+pharma_backend/venv/
+pharma_backend/__pycache__/
+pharma_backend/.env
+pharma_backend/*.pyc
+
+# Système
+.DS_Store
+Thumbs.db
