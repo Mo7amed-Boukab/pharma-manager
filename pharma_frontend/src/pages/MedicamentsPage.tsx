@@ -6,25 +6,45 @@ import AddMedicamentModal from "../components/medicaments/AddMedicamentModal";
 import ConfirmModal from "../components/common/ConfirmModal";
 import { useMedicaments } from "../hooks/useMedicaments";
 import { useCategories } from "../hooks/useCategories";
+import { useVentes } from "../hooks/useVentes";
+import type { Medicament, MedicamentPayload } from "../types/medicament";
+
+interface CartItem {
+  id: number;
+  nom: string;
+  price: number;
+  qte: number;
+}
 
 export default function MedicamentsPage() {
-  const { 
-    medicaments, 
-    loading, 
-    error, 
+  const {
+    medicaments,
+    loading,
+    error,
     fetchMedicaments,
+    fetchAlertes,
     createMedicament,
     updateMedicament,
-    deleteMedicament 
+    deleteMedicament,
   } = useMedicaments();
   const { categories, fetchCategories } = useCategories();
+  const {
+    createVente,
+    error: venteError,
+    clearError: clearVenteError,
+  } = useVentes();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingMedicament, setEditingMedicament] = useState<any | null>(null);
+  const [editingMedicament, setEditingMedicament] = useState<Medicament | null>(
+    null,
+  );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [medicamentToDelete, setMedicamentToDelete] = useState<number | null>(null);
+  const [medicamentToDelete, setMedicamentToDelete] = useState<number | null>(
+    null,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSaleSubmitting, setIsSaleSubmitting] = useState(false);
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
@@ -34,9 +54,7 @@ export default function MedicamentsPage() {
     void fetchCategories();
   }, [fetchMedicaments, fetchCategories]);
 
-  const [cart, setCart] = useState<
-    { id: number; nom: string; price: number; qte: number }[]
-  >([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   const addToCart = (p: {
     id: number;
@@ -62,6 +80,30 @@ export default function MedicamentsPage() {
     setIsCartOpen(true);
   };
 
+  const decreaseCartQuantity = (id: number) => {
+    setCart((prev) =>
+      prev.flatMap((item) => {
+        if (item.id !== id) {
+          return [item];
+        }
+
+        if (item.qte <= 1) {
+          return [];
+        }
+
+        return [{ ...item, qte: item.qte - 1 }];
+      }),
+    );
+  };
+
+  const increaseCartQuantity = (id: number) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, qte: item.qte + 1 } : item,
+      ),
+    );
+  };
+
   const removeFromCart = (id: number) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
   };
@@ -85,7 +127,7 @@ export default function MedicamentsPage() {
     setSelectedCategories((prev) =>
       prev.includes(categoryId)
         ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
+        : [...prev, categoryId],
     );
   };
 
@@ -94,7 +136,7 @@ export default function MedicamentsPage() {
     setIsAddModalOpen(true);
   };
 
-  const openEditModal = (medicament: any) => {
+  const openEditModal = (medicament: Medicament) => {
     setEditingMedicament(medicament);
     setIsAddModalOpen(true);
   };
@@ -117,7 +159,7 @@ export default function MedicamentsPage() {
     }
   };
 
-  const handleMedicamentSubmit = async (payload: any) => {
+  const handleMedicamentSubmit = async (payload: MedicamentPayload) => {
     setIsSubmitting(true);
     let success = false;
     if (editingMedicament) {
@@ -134,6 +176,32 @@ export default function MedicamentsPage() {
     setIsSubmitting(false);
   };
 
+  const handleValidateSale = async () => {
+    if (cart.length === 0) {
+      return;
+    }
+
+    setIsSaleSubmitting(true);
+    clearVenteError();
+
+    const success = await createVente({
+      statut: "completee",
+      lignes: cart.map((item) => ({
+        medicament: item.id,
+        quantite: item.qte,
+      })),
+    });
+
+    if (success) {
+      setCart([]);
+      setIsCartOpen(false);
+      await fetchMedicaments();
+      await fetchAlertes();
+    }
+
+    setIsSaleSubmitting(false);
+  };
+
   return (
     <div className="p-8 relative font-sans">
       <div className="flex justify-between items-center mb-16">
@@ -148,7 +216,7 @@ export default function MedicamentsPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#00877a] text-white text-sm font-medium rounded-[4px] hover:bg-[#007065] transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#00877a] text-white text-sm font-medium rounded-sm hover:bg-[#007065] transition-colors"
         >
           <Plus size={18} /> Ajoute un medicament
         </button>
@@ -156,7 +224,7 @@ export default function MedicamentsPage() {
 
       <div className="flex gap-8">
         {/* Filters Sidebar */}
-        <div className="w-64 flex-shrink-0">
+        <div className="w-64 shrink-0">
           <div className="p-6 border border-[#f0f0f0] rounded">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-base font-bold text-gray-900">Filtres</h3>
@@ -208,7 +276,7 @@ export default function MedicamentsPage() {
         </div>
 
         {/* Main Area */}
-        <div className="flex-grow">
+        <div className="grow">
           <div className="mb-8 relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
               <Search size={20} className="text-gray-400" />
@@ -223,7 +291,9 @@ export default function MedicamentsPage() {
           </div>
 
           {loading ? (
-            <div className="text-sm text-gray-500 mb-4">Chargement des médicaments...</div>
+            <div className="text-sm text-gray-500 mb-4">
+              Chargement des médicaments...
+            </div>
           ) : error ? (
             <div className="mb-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
               {error}
@@ -231,18 +301,18 @@ export default function MedicamentsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMedicaments.map((p) => (
-                <MedicamentCard 
-                  key={p.id} 
-                  product={p} 
-                  onAddToCart={addToCart} 
+                <MedicamentCard
+                  key={p.id}
+                  product={p}
+                  onAddToCart={addToCart}
                   onEdit={openEditModal}
                   onDelete={openDeleteModal}
                 />
               ))}
               {filteredMedicaments.length === 0 && (
-                 <div className="col-span-3 py-8 text-center text-sm text-gray-500">
-                   Aucun médicament trouvé.
-                 </div>
+                <div className="col-span-3 py-8 text-center text-sm text-gray-500">
+                  Aucun médicament trouvé.
+                </div>
               )}
             </div>
           )}
@@ -252,10 +322,18 @@ export default function MedicamentsPage() {
       {/* Cart Drawer */}
       <CartDrawer
         isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
+        onClose={() => {
+          setIsCartOpen(false);
+          clearVenteError();
+        }}
         cart={cart}
         onRemove={removeFromCart}
+        onDecreaseQuantity={decreaseCartQuantity}
+        onIncreaseQuantity={increaseCartQuantity}
+        onSubmit={handleValidateSale}
         total={total}
+        loading={isSaleSubmitting}
+        error={venteError}
       />
 
       {/* Add Medicament Modal */}
