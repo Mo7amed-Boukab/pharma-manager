@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Search, Plus, ChevronDown } from "lucide-react";
 import MedicamentCard from "../components/medicaments/MedicamentCard";
 import CartDrawer from "../components/medicaments/CartDrawer";
@@ -27,12 +27,12 @@ export default function MedicamentsPage() {
     updateMedicament,
     deleteMedicament,
   } = useMedicaments();
-  const { categories, fetchCategories } = useCategories();
+  const { categories } = useCategories();
   const {
     createVente,
     error: venteError,
     clearError: clearVenteError,
-  } = useVentes();
+  } = useVentes({ enabled: false });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -48,11 +48,6 @@ export default function MedicamentsPage() {
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-
-  useEffect(() => {
-    void fetchMedicaments();
-    void fetchCategories();
-  }, [fetchMedicaments, fetchCategories]);
 
   const [cart, setCart] = useState<CartItem[]>([]);
 

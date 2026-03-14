@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import ConfirmModal from "../components/common/ConfirmModal";
 import VenteDetailsModal from "../components/ventes/VenteDetailsModal";
@@ -14,15 +14,6 @@ function buildFilters(date: string, statut: string) {
 }
 
 export default function VentesPage() {
-  const {
-    ventes,
-    loading,
-    error,
-    fetchVentes,
-    fetchVenteDetail,
-    annulerVente,
-    clearError,
-  } = useVentes();
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatut, setSelectedStatut] = useState("");
@@ -37,9 +28,15 @@ export default function VentesPage() {
     [selectedDate, selectedStatut],
   );
 
-  useEffect(() => {
-    void fetchVentes(apiFilters);
-  }, [fetchVentes, apiFilters]);
+  const {
+    ventes,
+    loading,
+    error,
+    fetchVentes,
+    fetchVenteDetail,
+    annulerVente,
+    clearError,
+  } = useVentes({ enabled: true, filters: apiFilters });
 
   const filteredVentes = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -82,7 +79,7 @@ export default function VentesPage() {
     const success = await annulerVente(venteToCancel.id);
 
     if (success) {
-      await fetchVentes(apiFilters);
+      await fetchVentes();
       setSelectedVente((currentVente) =>
         currentVente && currentVente.id === venteToCancel.id
           ? { ...currentVente, statut: "annulee" }

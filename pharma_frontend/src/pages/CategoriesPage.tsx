@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import AddCategoryModal from "../components/categories/AddCategoryModal";
 import ConfirmModal from "../components/common/ConfirmModal";
@@ -10,7 +10,6 @@ export default function CategoriesPage() {
     categories,
     loading,
     error,
-    fetchCategories,
     createCategory,
     updateCategory,
     deleteCategory,
@@ -21,13 +20,9 @@ export default function CategoriesPage() {
   const [search, setSearch] = useState("");
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<number | null>(null);
-
-  useEffect(() => {
-    void fetchCategories();
-  }, [fetchCategories]);
 
   const filteredCategories = useMemo(() => {
     if (!search.trim()) {

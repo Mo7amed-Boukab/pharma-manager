@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Bell } from "lucide-react";
 import StatCard from "../components/common/StatCard";
 import LatestMedicamentsList from "../components/dashboard/LatestMedicamentsList";
@@ -45,23 +45,9 @@ export default function DashboardPage() {
     alertesCount,
     loading: medicamentsLoading,
     error: medicamentsError,
-    fetchMedicaments,
-    fetchAlertes,
   } = useMedicaments();
-  const { categories, fetchCategories } = useCategories();
-  const {
-    ventes,
-    loading: ventesLoading,
-    error: ventesError,
-    fetchVentes,
-  } = useVentes();
-
-  useEffect(() => {
-    void fetchMedicaments();
-    void fetchCategories();
-    void fetchVentes();
-    void fetchAlertes();
-  }, [fetchMedicaments, fetchCategories, fetchVentes, fetchAlertes]);
+  const { categories } = useCategories();
+  const { ventes, loading: ventesLoading, error: ventesError } = useVentes();
 
   const latestMedicaments = useMemo(
     () =>

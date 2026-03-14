@@ -6,7 +6,7 @@ import type {
   VenteStatut,
 } from "../types/vente";
 
-interface VenteFilters {
+export interface VenteFilters {
   date?: string;
   statut?: VenteStatut;
 }
