@@ -1,0 +1,352 @@
+{
+  "info": {
+    "name": "PharmaManager API",
+    "description": "Collection pour tester l'API de gestion de pharmacie PharmaManager.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Catégories",
+      "item": [
+        {
+          "name": "Lister les catégories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", ""]
+            }
+          }
+        },
+        {
+          "name": "Créer une catégorie",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nom\": \"Antibiotiques\",\n    \"description\": \"Médicaments pour lutter contre les bactéries.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier une catégorie",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nom\": \"Antibiotiques (Modifié)\",\n    \"description\": \"Nouvelle description.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/1/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Détail d'une catégorie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/1/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier partiellement une catégorie",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"Description mise à jour partiellement.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/1/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une catégorie",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/1/",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "1", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Médicaments",
+      "item": [
+        {
+          "name": "Lister les médicaments (actifs)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medicaments/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", ""]
+            }
+          }
+        },
+        {
+          "name": "Alertes de stock",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medicaments/alertes/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", "alertes", ""]
+            }
+          }
+        },
+        {
+          "name": "Créer un médicament",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nom\": \"Doliprane\",\n    \"dci\": \"Paracétamol\",\n    \"categorie\": 1,\n    \"forme\": \"comprime\",\n    \"dosage\": \"1000mg\",\n    \"prix_achat\": 15.00,\n    \"prix_vente\": 20.00,\n    \"stock_actuel\": 50,\n    \"stock_minimum\": 10,\n    \"date_expiration\": \"2026-12-31\",\n    \"ordonnance_requise\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/medicaments/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", ""]
+            }
+          }
+        },
+        {
+          "name": "Détail d'un médicament",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medicaments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier un médicament",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nom\": \"Doliprane\",\n    \"dci\": \"Paracétamol\",\n    \"categorie\": 1,\n    \"forme\": \"comprime\",\n    \"dosage\": \"1000mg\",\n    \"prix_achat\": 15.00,\n    \"prix_vente\": 22.00,\n    \"stock_actuel\": 45,\n    \"stock_minimum\": 10,\n    \"date_expiration\": \"2026-12-31\",\n    \"ordonnance_requise\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/medicaments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier partiellement un médicament",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prix_vente\": 21.50,\n    \"stock_actuel\": 40\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/medicaments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Soft Delete un médicament",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/medicaments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["medicaments", "1", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ventes",
+      "item": [
+        {
+          "name": "Historique des ventes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ventes/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", ""]
+            }
+          }
+        },
+        {
+          "name": "Détail d'une vente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ventes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Créer une vente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"statut\": \"completee\",\n    \"notes\": \"Client régulier\",\n    \"lignes\": [\n        {\n            \"medicament\": 1,\n            \"quantite\": 2\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ventes/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", ""]
+            }
+          }
+        },
+        {
+          "name": "Annuler une vente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ventes/1/annuler/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", "1", "annuler", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier une vente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"statut\": \"completee\",\n    \"notes\": \"Vente mise à jour\",\n    \"lignes\": [\n        {\n            \"medicament\": 1,\n            \"quantite\": 2\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ventes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Modifier partiellement une vente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"notes\": \"Note modifiée via PATCH\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ventes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une vente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ventes/1/",
+              "host": ["{{base_url}}"],
+              "path": ["ventes", "1", ""]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    }
+  ]
+}
