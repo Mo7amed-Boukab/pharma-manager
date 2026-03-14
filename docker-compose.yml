@@ -1,0 +1,72 @@
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: pharma_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-pharma_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pharma_network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-pharma_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend Django ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./pharma_backend
+      dockerfile: Dockerfile
+    container_name: pharma_backend
+    restart: unless-stopped
+    env_file:
+      - ./pharma_backend/.env
+    environment:
+      # Surcharge du host pour pointer vers le service db du compose
+      DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - pharma_network
+    volumes:
+      # Rechargement à chaud en développement (optionnel, retirer en prod)
+      - ./pharma_backend:/app
+
+  # ── Frontend React ──────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./pharma_frontend
+      dockerfile: Dockerfile
+      args:
+        # L'URL de l'API vue depuis le navigateur (hôte réel, pas le réseau Docker)
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
+    container_name: pharma_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - pharma_network
+
+# ── Réseau isolé ────────────────────────────────────────────────────────────
+networks:
+  pharma_network:
+    driver: bridge
+
+# ── Volumes persistants ─────────────────────────────────────────────────────
+volumes:
+  postgres_data:

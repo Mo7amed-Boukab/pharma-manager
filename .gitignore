@@ -8,6 +8,10 @@ pharma_backend/.env
 **/*.pyo
 **/*.cpython-*.pyc
 
+# ===== DOCKER =====
+.env
+docker-compose.override.yml
+
 # ===== SYSTÈME =====
 .DS_Store
 Thumbs.db
