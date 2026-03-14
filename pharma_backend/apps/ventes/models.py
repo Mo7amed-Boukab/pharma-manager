@@ -50,14 +50,27 @@ class Vente(models.Model):
         ordering = ['-date_vente']
 
     def save(self, *args, **kwargs):
-        """Génère automatiquement la référence unique à la création."""
-        if not self.reference:
-            annee = timezone.now().year
-            derniere = Vente.objects.filter(
-                reference__startswith=f'VNT-{annee}'
-            ).count()
-            self.reference = f'VNT-{annee}-{str(derniere + 1).zfill(4)}'
+        """
+        Génère automatiquement la référence unique à la création.
+        Réintègre le stock si la vente est annulée (ex: via Django Admin).
+        """
+        is_new = self.pk is None
+
+        # Gestion de l'annulation et réintégration du stock
+        if not is_new:
+            old_instance = Vente.objects.get(pk=self.pk)
+            if old_instance.statut != 'annulee' and self.statut == 'annulee':
+                for ligne in self.lignes.all():
+                    ligne.medicament.stock_actuel += ligne.quantite
+                    ligne.medicament.save(update_fields=['stock_actuel'])
+
         super().save(*args, **kwargs)
+
+        # Génération de la référence post-sauvegarde avec l'ID (Thread-Safe)
+        if is_new and not self.reference:
+            annee = timezone.now().year
+            self.reference = f'VNT-{annee}-{str(self.pk).zfill(4)}'
+            super().save(update_fields=['reference'])
 
     def __str__(self):
         return f'{self.reference} — {self.total_ttc} MAD'
@@ -103,9 +116,24 @@ class LigneVente(models.Model):
         verbose_name_plural = 'Lignes de vente'
 
     def save(self, *args, **kwargs):
-        """Calcule automatiquement le sous_total avant sauvegarde."""
+        """Calcule automatiquement le sous_total, déduit le stock et met à jour le total TTC parent."""
+        is_new = self.pk is None
+
+        # Affecter le prix unitaire actuel du médicament s'il n'est pas fourni
+        if not self.prix_unitaire and self.medicament_id:
+            self.prix_unitaire = self.medicament.prix_vente
+
         self.sous_total = self.quantite * self.prix_unitaire
         super().save(*args, **kwargs)
+
+        if is_new:
+            # 1. Déduction du stock au moment de la vente
+            self.medicament.stock_actuel -= self.quantite
+            self.medicament.save(update_fields=['stock_actuel'])
+
+            # 2. Mise à jour du total de la vente parente
+            self.vente.total_ttc += self.sous_total
+            self.vente.save(update_fields=['total_ttc'])
 
     def __str__(self):
         return f'{self.medicament.nom} x{self.quantite}'

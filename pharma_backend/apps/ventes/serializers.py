@@ -51,32 +51,21 @@ class VenteSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         """
-        Crée la vente avec ses lignes et déduit le stock automatiquement.
-        Utilise une transaction pour garantir l'intégrité des données.
+        Crée la vente avec ses lignes.
+        La déduction du stock et le calcul des totaux sont désormais délégués
+        aux modèles (LigneVente.save et Vente.save) pour garantir la cohérence depuis l'Administration.
         """
         lignes_data = validated_data.pop('lignes')
         vente = Vente.objects.create(**validated_data)
-        total = 0
 
         for ligne_data in lignes_data:
-            medicament = ligne_data['medicament']
-            quantite = ligne_data['quantite']
-            prix_unitaire = medicament.prix_vente  # snapshot du prix actuel
-
-            ligne = LigneVente.objects.create(
+            LigneVente.objects.create(
                 vente=vente,
-                medicament=medicament,
-                quantite=quantite,
-                prix_unitaire=prix_unitaire,
+                medicament=ligne_data['medicament'],
+                quantite=ligne_data['quantite']
+                # prix_unitaire snapshot is handled in LigneVente.save()
             )
-            total += ligne.sous_total
 
-            # Déduction du stock
-            medicament.stock_actuel -= quantite
-            medicament.save()
-
-        vente.total_ttc = total
-        vente.save()
         return vente
 
 
