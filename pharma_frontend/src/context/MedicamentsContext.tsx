@@ -8,6 +8,7 @@ import {
 import {
   createMedicament as createMedicamentApi,
   deleteMedicament as deleteMedicamentApi,
+  fetchMedicamentsAlertes,
   fetchMedicaments as fetchMedicamentsApi,
   updateMedicament as updateMedicamentApi,
 } from "../api/medicamentsApi";
@@ -16,9 +17,11 @@ import type { Medicament, MedicamentPayload } from "../types/medicament";
 
 interface MedicamentsContextValue {
   medicaments: Medicament[];
+  alertesCount: number;
   loading: boolean;
   error: string | null;
   fetchMedicaments: (params?: { search?: string; categorie?: number }) => Promise<void>;
+  fetchAlertes: () => Promise<void>;
   createMedicament: (payload: MedicamentPayload) => Promise<boolean>;
   updateMedicament: (id: number, payload: MedicamentPayload) => Promise<boolean>;
   deleteMedicament: (id: number) => Promise<boolean>;
@@ -31,6 +34,7 @@ export const MedicamentsContext = createContext<
 
 export function MedicamentsProvider({ children }: { children: ReactNode }) {
   const [medicaments, setMedicaments] = useState<Medicament[]>([]);
+  const [alertesCount, setAlertesCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,6 +55,15 @@ export function MedicamentsProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+
+  const fetchAlertes = useCallback(async () => {
+    try {
+      const data = await fetchMedicamentsAlertes();
+      setAlertesCount(data.count);
+    } catch {
+      setAlertesCount(0);
+    }
+  }, []);
 
   const createMedicament = useCallback(
     async (payload: MedicamentPayload) => {
@@ -97,9 +110,11 @@ export function MedicamentsProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       medicaments,
+      alertesCount,
       loading,
       error,
       fetchMedicaments,
+      fetchAlertes,
       createMedicament,
       updateMedicament,
       deleteMedicament,
@@ -107,9 +122,11 @@ export function MedicamentsProvider({ children }: { children: ReactNode }) {
     }),
     [
       medicaments,
+      alertesCount,
       loading,
       error,
       fetchMedicaments,
+      fetchAlertes,
       createMedicament,
       updateMedicament,
       deleteMedicament,
