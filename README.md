@@ -4,6 +4,16 @@ Application complète de gestion de pharmacie — backend Django REST + frontend
 
 ---
 
+## Déploiement (Production)
+
+| Service | URL |
+| ------- | --- |
+| Frontend (Vercel) | https://pharma-manager-sigma.vercel.app/ |
+| Backend API (Render) | https://pharma-manager-api.onrender.com/api/v1/ |
+| Swagger / OpenAPI (Render) | https://pharma-manager-api.onrender.com/api/schema/swagger-ui/ |
+
+---
+
 ## Stack
 
 | Couche   | Technologies                                                                                  |
