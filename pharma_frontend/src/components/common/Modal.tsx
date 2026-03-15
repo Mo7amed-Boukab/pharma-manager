@@ -16,7 +16,7 @@ export default function Modal({ isOpen, onClose, title, description, children, m
     <div className="fixed inset-0 flex items-center justify-center z-[60]">
       <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
       <div 
-        className="bg-white w-full p-8 rounded-[6px] relative z-10 mx-4" 
+        className="bg-white w-full p-8 rounded relative z-10 mx-4" 
         style={{ maxWidth }}
       >
         <div className="flex justify-between items-start mb-2">

@@ -62,7 +62,7 @@ export default function LoginPage() {
                 <input
                   value={loginUsername}
                   onChange={(e) => setLoginUsername(e.target.value)}
-                  className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/80 transition text-sm"
+                  className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/80 transition text-sm"
                   placeholder="nom@exemple.com"
                   required
                 />
@@ -84,7 +84,7 @@ export default function LoginPage() {
                   type={showPassword ? "password" : "text"}
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/80 transition text-sm"
+                  className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/80 transition text-sm"
                   placeholder="Entrez votre mot de passe"
                   required
                 />
@@ -104,7 +104,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-white text-black font-bold py-4 rounded-sm tracking-[0.2em] hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 text-xs uppercase"
+              className="w-full bg-white text-black font-bold py-4 rounded tracking-[0.2em] hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 text-xs uppercase"
             >
               {submitting ? "CONNEXION..." : "SE CONNECTER"}
             </button>

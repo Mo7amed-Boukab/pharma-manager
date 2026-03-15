@@ -73,7 +73,7 @@ export default function Sidebar() {
                 return (
                   <Link to={item.path} key={item.path}>
                     <div
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-[6px] transition-all group ${
+                      className={`flex items-center justify-between px-3 py-2.5 rounded transition-all group ${
                         isActive
                           ? "bg-gray-100 text-black"
                           : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"

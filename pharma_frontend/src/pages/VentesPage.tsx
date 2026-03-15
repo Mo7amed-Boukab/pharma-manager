@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Download } from "lucide-react";
 import ConfirmModal from "../components/common/ConfirmModal";
 import VenteDetailsModal from "../components/ventes/VenteDetailsModal";
 import VentesTable from "../components/ventes/VentesTable";
+import CustomSelect from "../components/common/CustomSelect";
+import CustomDatePicker from "../components/common/CustomDatePicker";
 import { useVentes } from "../hooks/useVentes";
 import type { Vente, VenteDetail, VenteStatut } from "../types/vente";
+import { exportToCSV } from "../utils/csvExport";
 
 function buildFilters(date: string, statut: string) {
   return {
@@ -17,6 +20,7 @@ export default function VentesPage() {
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStatut, setSelectedStatut] = useState("");
+  const [exportLoading, setExportLoading] = useState(false);
   const [selectedVente, setSelectedVente] = useState<VenteDetail | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -91,6 +95,44 @@ export default function VentesPage() {
     setCancellingSaleId(null);
   };
 
+  const handleExportCSV = async () => {
+    if (filteredVentes.length === 0) return;
+
+    setExportLoading(true);
+
+    const ventesWithDetails = await Promise.all(
+      filteredVentes.map(async (vente) => {
+        const detail = await fetchVenteDetail(vente.id);
+        return {
+          vente,
+          nbArticles: detail
+            ? detail.lignes.reduce((sum, ligne) => sum + ligne.quantite, 0)
+            : 0,
+        };
+      }),
+    );
+
+    const dataToExport = ventesWithDetails.map(({ vente, nbArticles }) => ({
+      Référence: vente.reference,
+      Date: new Date(vente.date_vente).toLocaleDateString("fr-FR"),
+      Statut:
+        vente.statut === "completee"
+          ? "Complétée"
+          : vente.statut === "en_cours"
+            ? "En cours"
+            : "Annulée",
+      "Total (Dhs)": vente.total_ttc,
+      "Nb Articles": nbArticles,
+    }));
+
+    exportToCSV(
+      dataToExport,
+      `ventes_export_${new Date().toISOString().split("T")[0]}.csv`,
+    );
+
+    setExportLoading(false);
+  };
+
   return (
     <div className="p-8">
       {/* Header */}
@@ -103,6 +145,15 @@ export default function VentesPage() {
             Consultez et suivez vos transactions.
           </p>
         </div>
+        <button
+          onClick={() => {
+            void handleExportCSV();
+          }}
+          disabled={filteredVentes.length === 0 || exportLoading}
+          className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#f0f0f0] text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Download size={18} /> {exportLoading ? "Export..." : "Exporter CSV"}
+        </button>
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
@@ -115,39 +166,34 @@ export default function VentesPage() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Rechercher une vente par référence..."
-            className="w-full pl-11 pr-4 py-2.5 bg-white border border-[#f0f0f0] rounded-sm text-sm focus:outline-none transition-all"
+            className="w-full pl-11 pr-4 py-2.5 bg-white border border-[#f0f0f0] rounded text-sm focus:outline-none transition-all"
           />
         </div>
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(event) => setSelectedDate(event.target.value)}
-          className="w-full px-4 py-2.5 bg-white border border-[#f0f0f0] rounded-sm text-sm focus:outline-none transition-all"
-        />
-        <select
+        <CustomDatePicker value={selectedDate} onChange={setSelectedDate} />
+        <CustomSelect
           value={selectedStatut}
-          onChange={(event) => setSelectedStatut(event.target.value)}
-          className="w-full px-4 py-2.5 bg-white border border-[#f0f0f0] rounded-sm text-sm focus:outline-none transition-all"
-        >
-          <option value="">Tous les statuts</option>
-          <option value="completee">Complétée</option>
-          <option value="en_cours">En cours</option>
-          <option value="annulee">Annulée</option>
-        </select>
+          onChange={setSelectedStatut}
+          placeholder="Tous les statuts"
+          options={[
+            { value: "completee", label: "Complétée" },
+            { value: "en_cours", label: "En cours" },
+            { value: "annulee", label: "Annulée" },
+          ]}
+        />
       </div>
 
       {error && (
-        <div className="mb-6 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
       {loading ? (
-        <div className="rounded-sm border border-[#f0f0f0] bg-white px-4 py-10 text-center text-sm text-gray-500">
+        <div className="rounded border border-[#f0f0f0] bg-white px-4 py-10 text-center text-sm text-gray-500">
           Chargement des ventes...
         </div>
       ) : filteredVentes.length === 0 ? (
-        <div className="rounded-sm border border-[#f0f0f0] bg-white px-4 py-10 text-center text-sm text-gray-500">
+        <div className="rounded border border-[#f0f0f0] bg-white px-4 py-10 text-center text-sm text-gray-500">
           Aucune vente trouvée.
         </div>
       ) : (

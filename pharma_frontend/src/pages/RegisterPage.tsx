@@ -75,7 +75,7 @@ export default function RegisterPage() {
                   <input
                     value={registerFirstName}
                     onChange={(e) => setRegisterFirstName(e.target.value)}
-                    className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
+                    className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
                     placeholder="Jean"
                   />
                 </InputGroup>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
                   <input
                     value={registerLastName}
                     onChange={(e) => setRegisterLastName(e.target.value)}
-                    className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
+                    className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
                     placeholder="Dupont"
                   />
                 </InputGroup>
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                 <input
                   value={registerUsername}
                   onChange={(e) => setRegisterUsername(e.target.value)}
-                  className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
+                  className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
                   placeholder="nom_utilisateur"
                   required
                 />
@@ -104,7 +104,7 @@ export default function RegisterPage() {
                   type="email"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
-                  className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
+                  className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white transition text-sm"
                   placeholder="votre@email.com"
                   required
                 />
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                     type="password"
                     value={registerPassword}
                     onChange={(e) => setRegisterPassword(e.target.value)}
-                    className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/50 transition text-sm"
+                    className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/50 transition text-sm"
                     placeholder="********"
                     required
                   />
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                     type="password"
                     value={registerConfirmPassword}
                     onChange={(e) => setRegisterConfirmPassword(e.target.value)}
-                    className="w-full bg-transparent border border-white/60 rounded-sm px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/50 transition text-sm"
+                    className="w-full bg-transparent border border-white/60 rounded px-4 py-3 text-white placeholder:text-white/60 focus:outline-none focus:border-white/50 transition text-sm"
                     placeholder="********"
                     required
                   />
@@ -139,7 +139,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-white text-black font-bold py-4 rounded-sm tracking-[0.2em] hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 text-xs uppercase"
+              className="w-full bg-white text-black font-bold py-4 rounded tracking-[0.2em] hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 text-xs uppercase"
             >
               {submitting ? "CRÉATION..." : "S'INSCRIRE"}
             </button>

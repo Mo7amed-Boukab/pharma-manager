@@ -72,9 +72,22 @@ export default function DashboardPage() {
     [ventes],
   );
 
+  const totalIncome = useMemo(() => {
+    return ventes
+      .filter((vente) => vente.statut === "completee")
+      .reduce((sum, vente) => sum + Number.parseFloat(vente.total_ttc), 0);
+  }, [ventes]);
+
   const totalMedicaments = medicamentsLoading ? "..." : medicaments.length;
   const totalVentes = ventesLoading ? "..." : ventesCompletees.length;
   const totalCategories = categories.length;
+  const totalIncomeDisplay = ventesLoading
+    ? "..."
+    : new Intl.NumberFormat("fr-MA", {
+        style: "currency",
+        currency: "MAD",
+        minimumFractionDigits: 2,
+      }).format(totalIncome);
   const dashboardError = medicamentsError ?? ventesError;
 
   return (
@@ -89,21 +102,22 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* 3 Top Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 lg:mb-12">
+      {/* Top Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 lg:mb-12">
         <StatCard label="Total Médicaments" value={totalMedicaments} />
-        <StatCard label="Total Ventes" value={totalVentes} roundedSm />
-        <StatCard label="Catégories" value={totalCategories} roundedSm />
+        <StatCard label="Total Ventes" value={totalVentes}  />
+        <StatCard label="Catégories" value={totalCategories}  />
+        <StatCard label="Total Income" value={totalIncomeDisplay}  />
       </div>
 
       {dashboardError && (
-        <div className="mb-6 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {dashboardError}
         </div>
       )}
 
       {/* Alert Notification */}
-      <div className="mb-8 lg:mb-10 p-4 sm:p-6 bg-white border border-[#f0f0f0] rounded-sm flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+      <div className="mb-8 lg:mb-10 p-4 sm:p-6 bg-white border border-[#f0f0f0] rounded flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 rounded-full flex items-center justify-center shrink-0 border border-gray-100">
           <Bell size={20} className="text-gray-900" />
         </div>

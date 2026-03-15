@@ -23,7 +23,7 @@ export default function LatestMedicamentsList({
             className="p-4 sm:p-5 flex items-center justify-between hover:bg-gray-50/50 transition-colors group"
           >
             <div className="flex items-center gap-3 sm:gap-4 flex-grow min-w-0">
-              <div className="p-2 sm:p-2.5 bg-gray-50 rounded-[6px] group-hover:bg-[#e6f4f1] transition-colors flex-shrink-0">
+              <div className="p-2 sm:p-2.5 bg-gray-50 rounded group-hover:bg-[#e6f4f1] transition-colors flex-shrink-0">
                 <Pill
                   size={18}
                   className="text-gray-400 group-hover:text-[#00877a]"

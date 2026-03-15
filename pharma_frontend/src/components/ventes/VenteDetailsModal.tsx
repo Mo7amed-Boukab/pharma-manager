@@ -55,13 +55,13 @@ export default function VenteDetailsModal({
           Chargement des détails...
         </div>
       ) : error ? (
-        <div className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       ) : vente ? (
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-sm border border-[#f0f0f0] p-4">
+            <div className="rounded border border-[#f0f0f0] p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 ID Vente
               </p>
@@ -69,7 +69,7 @@ export default function VenteDetailsModal({
                 #{vente.id}
               </p>
             </div>
-            <div className="rounded-sm border border-[#f0f0f0] p-4">
+            <div className="rounded border border-[#f0f0f0] p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Date de vente
               </p>
@@ -77,7 +77,7 @@ export default function VenteDetailsModal({
                 {formatDate(vente.date_vente)}
               </p>
             </div>
-            <div className="rounded-sm border border-[#f0f0f0] p-4">
+            <div className="rounded border border-[#f0f0f0] p-4">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Statut
               </p>
@@ -85,7 +85,7 @@ export default function VenteDetailsModal({
                 {formatStatut(vente.statut)}
               </p>
             </div>
-            <div className="rounded-sm border border-[#f0f0f0] p-4 md:col-span-2 xl:col-span-1">
+            <div className="rounded border border-[#f0f0f0] p-4 md:col-span-2 xl:col-span-1">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Total TTC
               </p>
@@ -93,7 +93,7 @@ export default function VenteDetailsModal({
                 {vente.total_ttc} MAD
               </p>
             </div>
-            <div className="rounded-sm border border-[#f0f0f0] p-4 md:col-span-2 xl:col-span-2">
+            <div className="rounded border border-[#f0f0f0] p-4 md:col-span-2 xl:col-span-2">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 Notes
               </p>
@@ -105,7 +105,7 @@ export default function VenteDetailsModal({
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-sm border border-[#f0f0f0]">
+          <div className="overflow-hidden rounded border border-[#f0f0f0]">
             <div className="border-b border-gray-100 px-4 py-3">
               <h3 className="text-sm font-bold text-gray-900">
                 Lignes de vente
@@ -172,7 +172,7 @@ export default function VenteDetailsModal({
                 type="button"
                 onClick={onCancel}
                 disabled={cancelLoading}
-                className="rounded-sm border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {cancelLoading ? "Annulation..." : "Annuler la vente"}
               </button>
@@ -180,7 +180,7 @@ export default function VenteDetailsModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-sm bg-[#00877a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#007065]"
+              className="rounded bg-[#00877a] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#007065]"
             >
               Fermer
             </button>

@@ -81,7 +81,7 @@ export default function VentesTable({
               </td>
               <td className="px-6 py-5">
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-xs font-medium ${
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${
                     vente.statut === "completee"
                       ? "bg-green-50 text-green-700"
                       : vente.statut === "annulee"
@@ -104,7 +104,7 @@ export default function VentesTable({
                     <button
                       onClick={() => onCancel(vente)}
                       disabled={cancellingSaleId === vente.id}
-                      className="inline-flex items-center gap-1 rounded-sm border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-1 rounded border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Ban size={14} />
                       {cancellingSaleId === vente.id

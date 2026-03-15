@@ -46,7 +46,7 @@ export default function AddCategoryModal({
     >
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         {error ? (
-          <div className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error}
           </div>
         ) : null}
@@ -61,7 +61,7 @@ export default function AddCategoryModal({
             onChange={(e) => setNom(e.target.value)}
             required
             placeholder="Ex: Antibiotique"
-            className="w-full rounded-sm border border-gray-200 px-4 py-2 text-sm focus:border-[#00877a] focus:outline-none"
+            className="w-full rounded border border-gray-200 px-4 py-2 text-sm focus:border-[#00877a] focus:outline-none"
           />
         </div>
         <div>
@@ -73,7 +73,7 @@ export default function AddCategoryModal({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description..."
             rows={3}
-            className="w-full rounded-sm border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:border-[#00877a]"
+            className="w-full rounded border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:border-[#00877a]"
           />
         </div>
 
@@ -82,14 +82,14 @@ export default function AddCategoryModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="rounded-sm border border-gray-200 bg-gray-50 px-5 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-70"
+            className="rounded border border-gray-200 bg-gray-50 px-5 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-70"
           >
             Annuler
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="rounded-sm bg-[#00877a] px-5 py-2 text-sm font-medium text-white hover:bg-[#007065] disabled:cursor-not-allowed disabled:opacity-70"
+            className="rounded bg-[#00877a] px-5 py-2 text-sm font-medium text-white hover:bg-[#007065] disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Enregistrement..." : "Enregistrer"}
           </button>

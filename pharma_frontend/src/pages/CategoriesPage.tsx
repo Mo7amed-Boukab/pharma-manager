@@ -89,7 +89,7 @@ export default function CategoriesPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 rounded-sm bg-[#00877a] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#007065]"
+          className="flex items-center gap-2 rounded bg-[#00877a] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#007065]"
         >
           <Plus size={18} /> Ajoute une categorie
         </button>
@@ -105,12 +105,12 @@ export default function CategoriesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher une catégorie..."
-          className="w-full rounded-sm border border-[#f0f0f0] bg-white py-2.5 pl-11 pr-4 text-sm transition-all focus:outline-none"
+          className="w-full rounded border border-[#f0f0f0] bg-white py-2.5 pl-11 pr-4 text-sm transition-all focus:outline-none"
         />
       </div>
 
       {error ? (
-        <div className="mb-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </div>
       ) : null}
@@ -155,13 +155,13 @@ export default function CategoriesPage() {
                 <td className="px-6 py-5 text-right">
                   <div className="flex justify-end gap-3">
                     <button
-                      className="rounded-sm p-2 text-[#00877a] transition-colors hover:bg-gray-100"
+                      className="rounded p-2 text-[#00877a] transition-colors hover:bg-gray-100"
                       onClick={() => openEditModal(cat)}
                     >
                       <Pencil size={14} />
                     </button>
                     <button
-                      className="rounded-sm p-2 text-red-600 transition-colors hover:bg-gray-100"
+                      className="rounded p-2 text-red-600 transition-colors hover:bg-gray-100"
                       onClick={() => void handleDelete(cat.id)}
                     >
                       <Trash2 size={14} />

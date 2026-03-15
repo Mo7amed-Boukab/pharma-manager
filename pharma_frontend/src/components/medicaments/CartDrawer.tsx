@@ -62,7 +62,7 @@ export default function CartDrawer({
 
           <div className="grow overflow-y-auto no-scrollbar p-8">
             {error && (
-              <div className="mb-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                 {error}
               </div>
             )}
@@ -82,7 +82,7 @@ export default function CartDrawer({
                       </p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-3 px-3 py-1.5 bg-gray-50 rounded-sm">
+                      <div className="flex items-center gap-3 px-3 py-1.5 bg-gray-50 rounded">
                         <button
                           onClick={() => onDecreaseQuantity(item.id)}
                           className="text-gray-400 hover:text-gray-600"
@@ -127,7 +127,7 @@ export default function CartDrawer({
             <button
               onClick={onSubmit}
               disabled={cart.length === 0 || loading}
-              className="w-full py-2.5 bg-[#00877a] text-white rounded disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full py-2 bg-[#00877a] text-white rounded disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Validation..." : "Valider la vente"}
             </button>

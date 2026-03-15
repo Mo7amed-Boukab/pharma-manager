@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Search, Plus, ChevronDown } from "lucide-react";
+import { Search, Plus, ChevronDown, Download } from "lucide-react";
 import MedicamentCard from "../components/medicaments/MedicamentCard";
 import CartDrawer from "../components/medicaments/CartDrawer";
 import AddMedicamentModal from "../components/medicaments/AddMedicamentModal";
@@ -8,6 +8,7 @@ import { useMedicaments } from "../hooks/useMedicaments";
 import { useCategories } from "../hooks/useCategories";
 import { useVentes } from "../hooks/useVentes";
 import type { Medicament, MedicamentPayload } from "../types/medicament";
+import { exportToCSV } from "../utils/csvExport";
 
 interface CartItem {
   id: number;
@@ -154,6 +155,26 @@ export default function MedicamentsPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (filteredMedicaments.length === 0) return;
+
+    const dataToExport = filteredMedicaments.map((m) => ({
+      Nom: m.nom,
+      DCI: m.dci,
+      Catégorie: categories.find((c) => c.id === m.categorie)?.nom || "N/A",
+      "Prix Achat (Dhs)": m.prix_achat,
+      "Prix Vente (Dhs)": m.prix_vente,
+      Stock: m.stock_actuel,
+      "Stock Min": m.stock_minimum,
+      "Date d'expiration": m.date_expiration,
+    }));
+
+    exportToCSV(
+      dataToExport,
+      `inventaire_export_${new Date().toISOString().split("T")[0]}.csv`,
+    );
+  };
+
   const handleMedicamentSubmit = async (payload: MedicamentPayload) => {
     setIsSubmitting(true);
     let success = false;
@@ -209,12 +230,21 @@ export default function MedicamentsPage() {
           </p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-2.5 bg-[#00877a] text-white text-sm font-medium rounded-sm hover:bg-[#007065] transition-colors"
-        >
-          <Plus size={18} /> Ajoute un medicament
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleExportCSV}
+            disabled={filteredMedicaments.length === 0}
+            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#f0f0f0] text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download size={18} /> Exporter CSV
+          </button>
+          <button
+            onClick={openCreateModal}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#00877a] text-white text-sm font-medium rounded hover:bg-[#007065] transition-colors"
+          >
+            <Plus size={18} /> Ajoute un medicament
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-8">
@@ -281,7 +311,7 @@ export default function MedicamentsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher par nom ou DCI..."
-              className="w-full pl-11 pr-4 py-2.5 bg-white border border-[#f0f0f0] rounded-sm text-sm focus:outline-none transition-all"
+              className="w-full pl-11 pr-4 py-2.5 bg-white border border-[#f0f0f0] rounded text-sm focus:outline-none transition-all"
             />
           </div>
 
@@ -290,7 +320,7 @@ export default function MedicamentsPage() {
               Chargement des médicaments...
             </div>
           ) : error ? (
-            <div className="mb-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
               {error}
             </div>
           ) : (

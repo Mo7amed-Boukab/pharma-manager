@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Modal from "../common/Modal";
+import CustomSelect from "../common/CustomSelect";
+import CustomDatePicker from "../common/CustomDatePicker";
 import type { Category } from "../../types/category";
 import type { MedicamentPayload } from "../../types/medicament";
 
@@ -11,6 +13,11 @@ interface AddMedicamentModalProps {
   categories: Category[];
   loading?: boolean;
 }
+
+type MedicamentFormData = Omit<MedicamentPayload, "categorie" | "forme"> & {
+  categorie: number | "";
+  forme: string;
+};
 
 const FORME_CHOICES = [
   { value: "comprime", label: "Comprimé" },
@@ -29,11 +36,11 @@ export default function AddMedicamentModal({
   categories,
   loading,
 }: AddMedicamentModalProps) {
-  const [formData, setFormData] = useState<MedicamentPayload>({
+  const [formData, setFormData] = useState<MedicamentFormData>({
     nom: "",
     dci: "",
-    categorie: categories[0]?.id || 0,
-    forme: "comprime",
+    categorie: "",
+    forme: "",
     dosage: "",
     prix_achat: "",
     prix_vente: "",
@@ -48,8 +55,8 @@ export default function AddMedicamentModal({
       setFormData({
         nom: initialValue.nom || "",
         dci: initialValue.dci || "",
-        categorie: initialValue.categorie || categories[0]?.id || 0,
-        forme: initialValue.forme || "comprime",
+        categorie: initialValue.categorie || "",
+        forme: initialValue.forme || "",
         dosage: initialValue.dosage || "",
         prix_achat: initialValue.prix_achat || "",
         prix_vente: initialValue.prix_vente || "",
@@ -64,8 +71,8 @@ export default function AddMedicamentModal({
       setFormData({
         nom: "",
         dci: "",
-        categorie: categories[0]?.id || 0,
-        forme: "comprime",
+        categorie: "",
+        forme: "",
         dosage: "",
         prix_achat: "",
         prix_vente: "",
@@ -103,10 +110,20 @@ export default function AddMedicamentModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Validate required fields
-    if (!formData.nom || !formData.categorie || !formData.prix_vente) {
+    if (
+      !formData.nom ||
+      !formData.categorie ||
+      !formData.forme ||
+      !formData.prix_vente
+    ) {
       return;
     }
-    void onSubmit(formData);
+
+    void onSubmit({
+      ...formData,
+      categorie: Number(formData.categorie),
+      forme: formData.forme,
+    });
   };
 
   return (
@@ -129,7 +146,7 @@ export default function AddMedicamentModal({
               type="text"
               required
               placeholder="Ex: Doliprane"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
@@ -142,27 +159,28 @@ export default function AddMedicamentModal({
               onChange={handleChange}
               type="text"
               placeholder="Ex: Paracétamol"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">
               Catégorie
             </label>
-            <select
-              name="categorie"
+            <CustomSelect
               value={formData.categorie}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a] bg-white"
-            >
-              <option value="">Sélectionner une catégorie</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.nom}
-                </option>
-              ))}
-            </select>
+              onChange={(val) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  categorie: val ? Number(val) : "",
+                }))
+              }
+              placeholder="Sélectionner une catégorie"
+              size="sm"
+              options={categories.map((cat) => ({
+                value: cat.id,
+                label: cat.nom,
+              }))}
+            />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">
@@ -175,26 +193,22 @@ export default function AddMedicamentModal({
               type="text"
               required
               placeholder="Ex: 500mg"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">
               Forme
             </label>
-            <select
-              name="forme"
+            <CustomSelect
               value={formData.forme}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a] bg-white"
-            >
-              {FORME_CHOICES.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, forme: val }))
+              }
+              placeholder="Sélectionner une forme"
+              size="sm"
+              options={FORME_CHOICES}
+            />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">
@@ -208,7 +222,7 @@ export default function AddMedicamentModal({
               step="0.01"
               required
               placeholder="0.00"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
@@ -223,7 +237,7 @@ export default function AddMedicamentModal({
               step="0.01"
               required
               placeholder="0.00"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
@@ -237,7 +251,7 @@ export default function AddMedicamentModal({
               type="number"
               required
               placeholder="0"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
@@ -250,20 +264,19 @@ export default function AddMedicamentModal({
               onChange={handleChange}
               type="number"
               placeholder="10"
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              className="w-full px-4 py-2 border border-gray-200 rounded-sm text-sm focus:outline-none focus:border-[#00877a]"
             />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">
               Date d'Expiration
             </label>
-            <input
-              name="date_expiration"
+            <CustomDatePicker
               value={formData.date_expiration}
-              onChange={handleChange}
-              type="date"
-              required
-              className="w-full px-4 py-2 border border-gray-200 rounded-[4px] text-sm focus:outline-none focus:border-[#00877a]"
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, date_expiration: val }))
+              }
+              size="sm"
             />
           </div>
           <div className="flex items-center gap-2 mt-6">
@@ -293,14 +306,14 @@ export default function AddMedicamentModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 text-sm font-medium text-gray-500 bg-gray-50 border border-gray-200 rounded-[4px] hover:bg-gray-100"
+            className="px-5 py-2 text-sm font-medium text-gray-500 bg-gray-50 border border-gray-200 rounded-sm hover:bg-gray-100"
           >
             Annuler
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-5 py-2 text-sm font-medium text-white bg-[#00877a] rounded-[4px] hover:bg-[#007065] disabled:opacity-50"
+            className="px-5 py-2 text-sm font-medium text-white bg-[#00877a] rounded-sm hover:bg-[#007065] disabled:opacity-50"
           >
             {loading ? "Chargement..." : "Enregistrer"}
           </button>

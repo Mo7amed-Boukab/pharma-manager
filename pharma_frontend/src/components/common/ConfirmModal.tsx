@@ -57,7 +57,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-sm border border-gray-200 bg-gray-50 px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+            className="flex-1 rounded border border-gray-200 bg-gray-50 px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 disabled:opacity-50"
           >
             {cancelLabel}
           </button>
@@ -67,7 +67,7 @@ export default function ConfirmModal({
               onConfirm();
             }}
             disabled={loading}
-            className={`flex-1 rounded-sm px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 ${variantClasses[variant]}`}
+            className={`flex-1 rounded px-5 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 ${variantClasses[variant]}`}
           >
             {loading ? "Chargement..." : confirmLabel}
           </button>
