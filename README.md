@@ -168,6 +168,10 @@ L'interface est disponible sur **http://localhost:5173**.
 
 | Ressource     | Endpoint                       | Actions                  |
 | ------------- | ------------------------------ | ------------------------ |
+| Auth JWT      | `/api/v1/auth/register/`       | Créer un nouveau compte  |
+| Auth JWT      | `/api/v1/auth/token/`          | Se connecter (access + refresh) |
+| Auth JWT      | `/api/v1/auth/token/refresh/`  | Rafraichir le token d'accès |
+| Auth JWT      | `/api/v1/auth/me/`             | Profil utilisateur (via JWT) |
 | Catégories    | `/api/v1/categories/`          | CRUD complet             |
 | Médicaments   | `/api/v1/medicaments/`         | CRUD + `?stock_bas=true` |
 | Ventes        | `/api/v1/ventes/`              | Lister, créer            |
@@ -175,6 +179,8 @@ L'interface est disponible sur **http://localhost:5173**.
 | Annuler vente | `/api/v1/ventes/{id}/annuler/` | POST                     |
 
 Documentation interactive complète : **http://localhost:8000/api/schema/swagger-ui/**
+
+> Les endpoints métier (`categories`, `medicaments`, `ventes`) sont protégés et nécessitent un header `Authorization: Bearer <access_token>`.
 
 ---
 
@@ -204,7 +210,26 @@ Documentation interactive complète : **http://localhost:8000/api/schema/swagger
 
 | Route          | Description                                                          |
 | -------------- | -------------------------------------------------------------------- |
-| `/`            | Dashboard — KPIs, derniers médicaments ajoutés, alertes de stock bas |
-| `/medicaments` | Gestion des médicaments + panier → création de vente                 |
-| `/categories`  | Gestion des catégories                                               |
-| `/ventes`      | Historique des ventes avec filtres, détail modal, annulation         |
+| `/login`       | Page de connexion — Accès sécurisé                                   |
+| `/register`    | Page d'inscription — Création de nouveau compte                      |
+| `/`            | Dashboard (Protégé) — KPIs, alertes de stock bas                     |
+| `/medicaments` | Gestion des médicaments (Protégé) + Panier de vente                  |
+| `/categories`  | Gestion des catégories (Protégé)                                     |
+| `/ventes`      | Historique des ventes (Protégé) — Annulation et filtre               |
+
+---
+
+## Guide d'Authentification & Sécurité
+
+### Flow de fonctionnement (A à Z) :
+
+1.  **Inscription / Connexion** : L'utilisateur crée son compte sur `/register` ou se connecte sur `/login`.
+2.  **Obtention des Tokens** : Le Backend valide les identifiants et renvoie deux jetons : un `AccessToken` (court) et un `RefreshToken` (long).
+3.  **Stockage Sécurisé** : L'application React stocke ces jetons dans le `localStorage` et initialise un **AuthContext** global.
+4.  **Navigation Protégée** : Un composant `ProtectedRoute` bloque l'accès aux pages `/`, `/medicaments`, etc., si aucun jeton valide n'est présent.
+5.  **Intercepteur Axios** : Chaque requête vers l'API (ex: lister les médicaments) inclut automatiquement le jeton dans le header HTTP `Authorization: Bearer <token>`.
+6.  **Gestion de session** : Si le jeton expire, l'application tente de le rafraîchir silencieusement. En cas d'échec, l'utilisateur est redirigé vers `/login`.
+
+> [!IMPORTANT]
+> Pour tester en local, commencez par créer un compte via la page `/register` pour accéder au tableau de bord.
+
