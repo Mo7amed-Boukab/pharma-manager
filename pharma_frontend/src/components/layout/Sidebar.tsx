@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Pill,
@@ -10,9 +10,17 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import profileImage from "../../assets/image-profil.jpeg";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
+  function handleLogout() {
+    logout();
+    navigate("/login", { replace: true });
+  }
 
   const navGroups = [
     {
@@ -110,10 +118,10 @@ export default function Sidebar() {
           />
           <div className="flex-grow min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate">
-              Mohamed boukab
+              {user ? `${user.first_name} ${user.last_name}`.trim() || user.username : 'Utilisateur'}
             </p>
             <p className="text-[11px] text-gray-500 truncate">
-              mohamedboukab2002@gmail.com
+              {user?.email || 'email@exemple.com'}
             </p>
           </div>
           <ChevronRight size={14} className="text-gray-300" />
@@ -124,7 +132,10 @@ export default function Sidebar() {
             <Settings size={18} className="text-gray-400" />
             Paramètres
           </button>
-          <button className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-[6px] transition-all">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-[6px] transition-all"
+          >
             <LogOut size={18} className="text-gray-400" />
             Déconnexion
           </button>

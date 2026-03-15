@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
 from .models import Vente
@@ -14,6 +15,8 @@ class VenteViewSet(viewsets.ModelViewSet):
     Inclut un endpoint custom /{id}/annuler/ pour annuler une vente.
     """
     
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         """
         Retourne l'historique des ventes.

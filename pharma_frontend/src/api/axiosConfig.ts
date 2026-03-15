@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { clearTokens, getAccessToken } from "../auth/tokenStorage";
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
@@ -9,6 +10,34 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+axiosInstance.interceptors.request.use((request) => {
+  const token = getAccessToken();
+
+  if (token) {
+    request.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return request;
+});
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      clearTokens();
+
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname !== "/login"
+      ) {
+        window.location.href = "/login";
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export function getApiErrorMessage(
   error: unknown,

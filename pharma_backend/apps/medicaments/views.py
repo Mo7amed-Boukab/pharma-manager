@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import models
 from .models import Medicament
@@ -14,6 +15,7 @@ class MedicamentViewSet(viewsets.ModelViewSet):
     Inclut un endpoint custom /alertes/ pour les stocks bas.
     """
     serializer_class = MedicamentSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """
